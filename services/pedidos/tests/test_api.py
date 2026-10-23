@@ -1,6 +1,8 @@
 import pytest
 from conftest import make_token
 
+from pedidos_api.models import Cliente
+
 URL = "/api/pedidos/"
 
 
@@ -84,3 +86,23 @@ def test_filtros_orden_y_paginacion(operador, pedido_payload):
     assert pesos == ["1.00", "3.00", "5.00"]
     assert len(operador.get(URL, {"page_size": 2}).json()["results"]) == 2
     assert operador.get(URL, {"search": "Caja"}).json()["count"] == 3
+
+
+@pytest.mark.django_db
+def test_cliente_solo_ve_sus_pedidos(operador, api, cliente, pedido_payload):
+    cliente.usuario_id = 50
+    cliente.save()
+    propio = operador.post(URL, pedido_payload, format="json").json()["id"]
+    ajeno_cliente = Cliente.objects.create(nombre="Otro", telefono="1", usuario_id=51)
+    api.credentials(HTTP_AUTHORIZATION=f"Bearer {make_token('cliente', user_id=50)}")
+    assert api.get(URL).json()["count"] == 1
+    assert api.get(f"{URL}{propio}/").status_code == 200
+    assert api.get("/api/clientes/").json()["count"] == 1
+    assert ajeno_cliente.pk not in [c["id"] for c in api.get("/api/clientes/").json()["results"]]
+
+
+@pytest.mark.django_db
+def test_busqueda_por_folio(operador, pedido_payload):
+    creado = operador.post(URL, pedido_payload, format="json").json()
+    encontrados = operador.get(URL, {"folio": creado["folio"]}).json()
+    assert encontrados["count"] == 1 and encontrados["results"][0]["id"] == creado["id"]

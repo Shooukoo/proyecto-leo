@@ -91,13 +91,14 @@ def test_ultima_ubicacion_y_flota(operador):
     assert [(d["repartidor_id"], d["latitud"]) for d in flota] == [(1, 11), (2, 12)]
 
 
-def test_cliente_solo_consulta_ultima_por_pedido(operador):
+def test_cliente_no_accede_a_tracking_y_servicio_solo_a_ultima(operador):
     operador.post(UBI, {**PUNTO, "repartidor_id": 1, "pedido_id": 5}, format="json")
     cliente = cliente_con_rol("cliente", user_id=50)
-    assert cliente.get(UBI).status_code == 403
-    assert cliente.get(UBI + "ultima/", {"repartidor_id": 1}).status_code == 403
-    assert cliente.get(UBI + "ultima/", {"pedido_id": 5}).status_code == 200
-    assert cliente.post(UBI, PUNTO, format="json").status_code == 403
+    assert cliente.get(UBI + "ultima/", {"pedido_id": 5}).status_code == 403
+    servicio = cliente_con_rol("servicio", user_id=0)
+    assert servicio.get(UBI + "ultima/", {"pedido_id": 5}).status_code == 200
+    assert servicio.get(UBI).status_code == 403
+    assert servicio.post(UBI, PUNTO, format="json").status_code == 403
 
 
 def test_eventos_esquema_flexible_y_validacion(repartidor):

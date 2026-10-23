@@ -11,4 +11,4 @@ class PedidoFilter(django_filters.FilterSet):
 
     class Meta:
         model = Pedido
-        fields = ["estado", "prioridad", "cliente", "es_cod", "repartidor_id"]
+        fields = ["folio", "estado", "prioridad", "cliente", "es_cod", "repartidor_id"]

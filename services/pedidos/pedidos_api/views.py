@@ -16,7 +16,20 @@ from .serializers import (
 )
 
 
-class ClienteViewSet(viewsets.ModelViewSet):
+class AlcanceClienteMixin:
+    """El rol `cliente` solo ve lo que pertenece a su usuario; el resto ve todo."""
+
+    campo_cliente = "usuario_id"
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        user = self.request.user
+        if user.role == "cliente":
+            return qs.filter(**{self.campo_cliente: user.id})
+        return qs
+
+
+class ClienteViewSet(AlcanceClienteMixin, viewsets.ModelViewSet):
     queryset = Cliente.objects.prefetch_related("direcciones")
     serializer_class = ClienteSerializer
     permission_classes = [LecturaOGestion]
@@ -24,7 +37,8 @@ class ClienteViewSet(viewsets.ModelViewSet):
     ordering_fields = ["nombre", "creado"]
 
 
-class DireccionViewSet(viewsets.ModelViewSet):
+class DireccionViewSet(AlcanceClienteMixin, viewsets.ModelViewSet):
+    campo_cliente = "cliente__usuario_id"
     queryset = Direccion.objects.select_related("cliente")
     serializer_class = DireccionSerializer
     permission_classes = [LecturaOGestion]
@@ -33,7 +47,8 @@ class DireccionViewSet(viewsets.ModelViewSet):
     ordering_fields = ["ciudad", "colonia"]
 
 
-class PedidoViewSet(viewsets.ModelViewSet):
+class PedidoViewSet(AlcanceClienteMixin, viewsets.ModelViewSet):
+    campo_cliente = "cliente__usuario_id"
     queryset = Pedido.objects.select_related("cliente", "direccion_origen", "direccion_destino")
     serializer_class = PedidoSerializer
     permission_classes = [LecturaOGestion]

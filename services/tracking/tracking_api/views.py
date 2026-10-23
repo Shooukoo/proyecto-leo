@@ -156,12 +156,6 @@ class UbicacionViewSet(MongoViewSet):
     serializer_class = UbicacionSerializer
     filtros_enteros = ("repartidor_id", "pedido_id")
     campos_orden = ("timestamp", "repartidor_id", "velocidad_kmh")
-    permite_cliente = True  # solo para la acción `ultima` con pedido_id
-
-    def initial(self, request, *args, **kwargs):
-        # Los clientes únicamente pueden usar la acción `ultima` filtrando por pedido.
-        self.permite_cliente = self.action == "ultima"
-        super().initial(request, *args, **kwargs)
 
     @extend_schema(
         parameters=[OpenApiParameter("repartidor_id", int), OpenApiParameter("pedido_id", int)],
@@ -173,8 +167,6 @@ class UbicacionViewSet(MongoViewSet):
         filtro = self._filtro(request)
         if not ({"repartidor_id", "pedido_id"} & filtro.keys()):
             raise ValidationError("Indica repartidor_id o pedido_id.")
-        if request.user.role not in ROLES_STAFF | {"repartidor"} and "pedido_id" not in filtro:
-            raise PermissionDenied("Los clientes deben consultar por pedido_id.")
         _, docs = self.repo.list(filtro, ("timestamp", True), 0, 1)
         if not docs:
             raise NotFound("Sin ubicaciones para ese criterio.")

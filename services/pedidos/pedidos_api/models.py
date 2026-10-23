@@ -9,6 +9,12 @@ class Cliente(models.Model):
     nombre = models.CharField(max_length=120)
     telefono = models.CharField(max_length=20)
     email = models.EmailField(blank=True)
+    usuario_id = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        db_index=True,
+        help_text="ID de usuario (auth) dueño del cliente; acota lo que ve el rol cliente",
+    )
     creado = models.DateTimeField(auto_now_add=True)
 
     class Meta:
