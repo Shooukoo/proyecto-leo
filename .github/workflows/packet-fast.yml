@@ -1,0 +1,26 @@
+name: packet-fast
+
+on:
+  pull_request:
+    paths: ["packet-fast/**"]
+  push:
+    branches: [main, develop]
+    paths: ["packet-fast/**"]
+
+jobs:
+  lint-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packet-fast
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+      - run: pip install -r requirements-dev.txt
+      - run: ruff check .
+      - run: black --check .
+      - run: isort --check .
+      - run: pytest
