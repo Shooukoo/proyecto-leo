@@ -5,6 +5,24 @@
     "description": "Todos los endpoints de auth, pedidos, tracking y chatbot. Ejecutar en orden (Runner): cada carpeta depende de las variables que guarda la anterior. Requiere el entorno 'Entregable 2 - local' con demo_password.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
+  "variable": [
+    {
+      "key": "auth_url",
+      "value": "http://localhost:8001"
+    },
+    {
+      "key": "pedidos_url",
+      "value": "http://localhost:8002"
+    },
+    {
+      "key": "tracking_url",
+      "value": "http://localhost:8003"
+    },
+    {
+      "key": "chatbot_url",
+      "value": "http://localhost:8004"
+    }
+  ],
   "item": [
     {
       "name": "0. Sistema",
