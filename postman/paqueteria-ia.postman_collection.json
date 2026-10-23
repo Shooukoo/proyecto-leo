@@ -1,0 +1,1465 @@
+{
+  "info": {
+    "_postman_id": "3aac7ed8-c4cd-5db6-b3e8-044e46d21e41",
+    "name": "paqueteria-ia",
+    "description": "Flujo extremo a extremo de los 4 microservicios. Ejecutar en orden (Collection Runner / newman).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Auth",
+      "item": [
+        {
+          "name": "Registro público (siempre rol cliente)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{auth_url}}/api/auth/register/",
+              "host": [
+                "{{auth_url}}/api/auth/register/"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"nuevo.{{$timestamp}}@paqueteria.test\",\n  \"password\": \"{{demo_password}}\",\n  \"rol\": \"admin_sistema\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"rol forzado a cliente\", () => pm.expect(pm.response.json().rol).to.eql(\"cliente\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{auth_url}}/api/auth/login/",
+              "host": [
+                "{{auth_url}}/api/auth/login/"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@paqueteria.test\",\n  \"password\": \"{{demo_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set(\"admin_token\", pm.response.json().access);",
+                  "pm.test(\"incluye rol\", () => pm.expect(pm.response.json().user.rol).to.be.a(\"string\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login operador",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{auth_url}}/api/auth/login/",
+              "host": [
+                "{{auth_url}}/api/auth/login/"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"operador@paqueteria.test\",\n  \"password\": \"{{demo_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set(\"operador_token\", pm.response.json().access);",
+                  "pm.test(\"incluye rol\", () => pm.expect(pm.response.json().user.rol).to.be.a(\"string\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login repartidor",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{auth_url}}/api/auth/login/",
+              "host": [
+                "{{auth_url}}/api/auth/login/"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"repartidor@paqueteria.test\",\n  \"password\": \"{{demo_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set(\"repartidor_token\", pm.response.json().access);",
+                  "pm.test(\"incluye rol\", () => pm.expect(pm.response.json().user.rol).to.be.a(\"string\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login cliente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{auth_url}}/api/auth/login/",
+              "host": [
+                "{{auth_url}}/api/auth/login/"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"cliente@paqueteria.test\",\n  \"password\": \"{{demo_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set(\"cliente_token\", pm.response.json().access);",
+                  "pm.collectionVariables.set(\"cliente_user_id\", pm.response.json().user.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login con credenciales inválidas",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{auth_url}}/api/auth/login/",
+              "host": [
+                "{{auth_url}}/api/auth/login/"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"operador@paqueteria.test\",\n  \"password\": \"incorrecta\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Perfil (me)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{operador_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{auth_url}}/api/auth/me/",
+              "host": [
+                "{{auth_url}}/api/auth/me/"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Perfil sin token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{auth_url}}/api/auth/me/",
+              "host": [
+                "{{auth_url}}/api/auth/me/"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Usuarios (solo admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{auth_url}}/api/users/?rol=repartidor",
+              "host": [
+                "{{auth_url}}/api/users/?rol=repartidor"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"paginado\", () => pm.expect(pm.response.json()).to.have.property(\"count\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Usuarios como operador → 403",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{operador_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{auth_url}}/api/users/",
+              "host": [
+                "{{auth_url}}/api/users/"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 403\", () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "2. Pedidos",
+      "item": [
+        {
+          "name": "Crear cliente (ligado al usuario cliente)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{operador_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{pedidos_url}}/api/clientes/",
+              "host": [
+                "{{pedidos_url}}/api/clientes/"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Cliente Demo\",\n  \"telefono\": \"4431112233\",\n  \"usuario_id\": \"{{cliente_user_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set(\"cliente_user_id\", Number(pm.collectionVariables.get(\"cliente_user_id\")));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set(\"cliente_id\", pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Crear dirección origen",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{operador_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{pedidos_url}}/api/direcciones/",
+              "host": [
+                "{{pedidos_url}}/api/direcciones/"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cliente\": \"{{cliente_id}}\",\n  \"calle\": \"Madero\",\n  \"numero\": \"1\",\n  \"colonia\": \"Centro\",\n  \"ciudad\": \"Morelia\",\n  \"codigo_postal\": \"58000\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set(\"cliente_id\", Number(pm.collectionVariables.get(\"cliente_id\")));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set(\"dir_origen\", pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Crear dirección destino",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{operador_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{pedidos_url}}/api/direcciones/",
+              "host": [
+                "{{pedidos_url}}/api/direcciones/"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cliente\": \"{{cliente_id}}\",\n  \"calle\": \"Allende\",\n  \"numero\": \"2\",\n  \"colonia\": \"Centro\",\n  \"ciudad\": \"Morelia\",\n  \"codigo_postal\": \"58000\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set(\"dir_destino\", pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Crear pedido",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{operador_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{pedidos_url}}/api/pedidos/",
+              "host": [
+                "{{pedidos_url}}/api/pedidos/"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cliente\": \"{{cliente_id}}\",\n  \"direccion_origen\": \"{{dir_origen}}\",\n  \"direccion_destino\": \"{{dir_destino}}\",\n  \"descripcion\": \"Caja mediana\",\n  \"peso_kg\": \"2.50\",\n  \"prioridad\": \"alta\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set(\"pedido_id\", pm.response.json().id);",
+                  "pm.collectionVariables.set(\"pedido_folio\", pm.response.json().folio);",
+                  "pm.test(\"estado inicial creado\", () => pm.expect(pm.response.json().estado).to.eql(\"creado\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Pedido COD sin monto → 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{operador_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{pedidos_url}}/api/pedidos/",
+              "host": [
+                "{{pedidos_url}}/api/pedidos/"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cliente\": \"{{cliente_id}}\",\n  \"direccion_origen\": \"{{dir_origen}}\",\n  \"direccion_destino\": \"{{dir_destino}}\",\n  \"peso_kg\": \"1\",\n  \"es_cod\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Listar con filtros, orden y paginación",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{operador_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{pedidos_url}}/api/pedidos/?prioridad=alta&ordering=-creado&page_size=5",
+              "host": [
+                "{{pedidos_url}}/api/pedidos/?prioridad=alta&ordering=-creado&page_size=5"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"count >= 1\", () => pm.expect(pm.response.json().count).to.be.at.least(1));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Buscar por folio",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{operador_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{pedidos_url}}/api/pedidos/?folio={{pedido_folio}}",
+              "host": [
+                "{{pedidos_url}}/api/pedidos/?folio={{pedido_folio}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"1 resultado\", () => pm.expect(pm.response.json().count).to.eql(1));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Transición inválida creado → entregado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{repartidor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{pedidos_url}}/api/pedidos/{{pedido_id}}/cambiar-estado/",
+              "host": [
+                "{{pedidos_url}}/api/pedidos/{{pedido_id}}/cambiar-estado/"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"entregado\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Repartidor pasa a en_ruta",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{repartidor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{pedidos_url}}/api/pedidos/{{pedido_id}}/cambiar-estado/",
+              "host": [
+                "{{pedidos_url}}/api/pedidos/{{pedido_id}}/cambiar-estado/"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"en_ruta\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"en_ruta\", () => pm.expect(pm.response.json().estado).to.eql(\"en_ruta\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Historial del pedido",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{operador_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{pedidos_url}}/api/pedidos/{{pedido_id}}/historial/",
+              "host": [
+                "{{pedidos_url}}/api/pedidos/{{pedido_id}}/historial/"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"1 cambio\", () => pm.expect(pm.response.json().length).to.eql(1));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cliente ve solo sus pedidos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{cliente_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{pedidos_url}}/api/pedidos/",
+              "host": [
+                "{{pedidos_url}}/api/pedidos/"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cliente no puede crear pedidos → 403",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{cliente_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{pedidos_url}}/api/pedidos/",
+              "host": [
+                "{{pedidos_url}}/api/pedidos/"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 403\", () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "3. Tracking",
+      "item": [
+        {
+          "name": "Registrar ubicación GPS (repartidor)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{repartidor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{tracking_url}}/api/ubicaciones/",
+              "host": [
+                "{{tracking_url}}/api/ubicaciones/"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pedido_id\": \"{{pedido_id}}\",\n  \"latitud\": 19.7006,\n  \"longitud\": -101.1844,\n  \"velocidad_kmh\": 32,\n  \"extra\": {\n    \"dispositivo\": \"Android 14\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set(\"pedido_id\", Number(pm.collectionVariables.get(\"pedido_id\")));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set(\"ubicacion_id\", pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Coordenadas inválidas → 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{repartidor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{tracking_url}}/api/ubicaciones/",
+              "host": [
+                "{{tracking_url}}/api/ubicaciones/"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"latitud\": 120,\n  \"longitud\": 0\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Última ubicación del pedido",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{operador_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{tracking_url}}/api/ubicaciones/ultima/?pedido_id={{pedido_id}}",
+              "host": [
+                "{{tracking_url}}/api/ubicaciones/ultima/?pedido_id={{pedido_id}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Flota (última por repartidor)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{operador_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{tracking_url}}/api/ubicaciones/ultimas/",
+              "host": [
+                "{{tracking_url}}/api/ubicaciones/ultimas/"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Listar ubicaciones paginado",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{operador_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{tracking_url}}/api/ubicaciones/?ordering=-timestamp&page_size=10",
+              "host": [
+                "{{tracking_url}}/api/ubicaciones/?ordering=-timestamp&page_size=10"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar ubicación (PATCH)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{repartidor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{tracking_url}}/api/ubicaciones/{{ubicacion_id}}/",
+              "host": [
+                "{{tracking_url}}/api/ubicaciones/{{ubicacion_id}}/"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"velocidad_kmh\": 40\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Evento de esquema flexible (foto)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{repartidor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{tracking_url}}/api/eventos/",
+              "host": [
+                "{{tracking_url}}/api/eventos/"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipo\": \"foto\",\n  \"pedido_id\": \"{{pedido_id}}\",\n  \"datos\": {\n    \"url\": \"https://ejemplo.test/foto.jpg\",\n    \"bytes\": 2048\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Incidencia sin motivo → 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{repartidor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{tracking_url}}/api/eventos/",
+              "host": [
+                "{{tracking_url}}/api/eventos/"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipo\": \"incidencia\",\n  \"pedido_id\": \"{{pedido_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cliente sin acceso a tracking → 403",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{cliente_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{tracking_url}}/api/ubicaciones/",
+              "host": [
+                "{{tracking_url}}/api/ubicaciones/"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 403\", () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "4. Chatbot",
+      "item": [
+        {
+          "name": "Chat: estado del pedido",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{cliente_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{chatbot_url}}/api/chat/",
+              "host": [
+                "{{chatbot_url}}/api/chat/"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mensaje\": \"¿Cuál es el estado de mi pedido {{pedido_id}}?\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set(\"conversation_id\", pm.response.json().conversation_id);",
+                  "pm.test(\"usó consultar_pedido\", () => pm.expect(pm.response.json().herramientas_usadas).to.include(\"consultar_pedido\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Chat: ubicación (continúa la conversación)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{cliente_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{chatbot_url}}/api/chat/",
+              "host": [
+                "{{chatbot_url}}/api/chat/"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"conversation_id\": \"{{conversation_id}}\",\n  \"mensaje\": \"¿Dónde está mi pedido {{pedido_id}}?\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"usó ubicacion_pedido\", () => pm.expect(pm.response.json().herramientas_usadas).to.include(\"ubicacion_pedido\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Chat: pedido ajeno/inexistente no inventa datos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{cliente_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{chatbot_url}}/api/chat/",
+              "host": [
+                "{{chatbot_url}}/api/chat/"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mensaje\": \"estado de mi pedido 999999\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"sin datos inventados\", () => pm.expect(pm.response.json().respuesta).to.not.include(\"en_ruta\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Detalle de la conversación",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{cliente_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{chatbot_url}}/api/conversaciones/{{conversation_id}}/",
+              "host": [
+                "{{chatbot_url}}/api/conversaciones/{{conversation_id}}/"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Chat: escalar a humano",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{cliente_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{chatbot_url}}/api/chat/",
+              "host": [
+                "{{chatbot_url}}/api/chat/"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mensaje\": \"quiero hablar con un agente\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"escalado\", () => pm.expect(pm.response.json().escalado).to.eql(true));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Operador: cola de conversaciones escaladas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{operador_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{chatbot_url}}/api/conversaciones/?estado=escalada",
+              "host": [
+                "{{chatbot_url}}/api/conversaciones/?estado=escalada"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"hay escaladas\", () => pm.expect(pm.response.json().count).to.be.at.least(1));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Chat sin token → 401",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{chatbot_url}}/api/chat/",
+              "host": [
+                "{{chatbot_url}}/api/chat/"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mensaje\": \"hola\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
