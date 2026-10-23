@@ -12,7 +12,7 @@ class TokenUser:
     is_anonymous = False
 
     def __init__(self, claims):
-        self.id = claims.get("user_id")
+        self.id = int(claims["user_id"]) if "user_id" in claims else None
         self.email = claims.get("email", "")
         self.role = claims.get("role", "")
         self.pk = self.id
