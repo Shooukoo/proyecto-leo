@@ -9,7 +9,7 @@ on:
 
 jobs:
   lint-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -20,8 +20,8 @@ jobs:
     env:
       USE_SQLITE: "true" # los tests de servicios SQL no necesitan PostgreSQL
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.14"
           cache: pip
@@ -34,9 +34,9 @@ jobs:
 
   e2e:
     needs: lint-test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Preparar .env efímero
         run: |
           {
