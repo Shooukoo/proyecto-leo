@@ -2,7 +2,7 @@
 
 Plataforma para una paquetería mediana en México que cubre el ciclo completo de la última milla: **registro de pedidos, ruteo optimizado, reparto con evidencia, tracking en tiempo real, chatbot con IA y panel administrativo**.
 
-> Estado: fase de definición (v1.0 del documento de visión, septiembre 2026). Proyecto académico de un semestre.
+> Estado: entregable 2 — servicios `auth`, `pedidos`, `tracking` y `chatbot` funcionando localmente con Docker Compose. Proyecto académico de un semestre.
 
 ---
 
@@ -172,6 +172,31 @@ stateDiagram-v2
 | Repositorio y CI | GitHub (monorepo), GitHub Actions |
 | Calidad de código | PEP 8, Black, isort, Ruff, pytest + pytest-django, Conventional Commits |
 | Frontend del panel | Por definir (React, Vue u otro) |
+
+## Ejecución local
+
+Requisitos: Docker y Docker Compose.
+
+```sh
+cp .env.example .env          # reemplaza los CHANGE_ME (por ejemplo con `openssl rand -hex 32`)
+docker compose up --build -d  # 4 servicios + 2 PostgreSQL + MongoDB
+docker compose exec auth python manage.py seed_demo   # un usuario por rol (usa DEMO_PASSWORD)
+```
+
+| Servicio | Puerto | Base de datos | Swagger UI |
+|---|---|---|---|
+| auth | 8001 | PostgreSQL | http://localhost:8001/api/docs/ |
+| pedidos | 8002 | PostgreSQL | http://localhost:8002/api/docs/ |
+| tracking | 8003 | MongoDB | http://localhost:8003/api/docs/ |
+| chatbot | 8004 | MongoDB | http://localhost:8004/api/docs/ |
+
+Usuarios demo (contraseña = `DEMO_PASSWORD`): `admin@`, `gerente@`, `operador@`, `repartidor@` y `cliente@paqueteria.test`.
+
+- **Chatbot:** `LLM_PROVIDER=mock` (por defecto) responde con reglas locales sin red. Para Gemini define `LLM_PROVIDER=gemini` y `GEMINI_API_KEY` en `.env`.
+- **Pruebas unitarias** (por servicio): `cd services/<servicio> && pip install -r requirements-dev.txt && USE_SQLITE=true pytest`
+- **Pruebas de API:** importa `postman/paqueteria-ia.postman_collection.json` y `postman/local.postman_environment.json` en Postman, o ejecuta `npx newman run postman/paqueteria-ia.postman_collection.json -e postman/local.postman_environment.json --env-var "demo_password=<DEMO_PASSWORD>"`.
+- **OpenAPI:** esquemas exportados en [`docs/api/`](docs/api); regenerar con `PYTHON=python scripts/export_openapi.sh`.
+- **Scrum:** backlog y plantillas en [`docs/scrum/`](docs/scrum).
 
 ## Despliegue
 
