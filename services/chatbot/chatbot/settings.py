@@ -76,6 +76,7 @@ JWT_SIGNING_KEY = os.environ.get(
 JWT_ALGORITHM = "HS256"
 
 REST_FRAMEWORK = {
+    "UNAUTHENTICATED_USER": None,  # sin django.contrib.auth en este servicio
     "DEFAULT_AUTHENTICATION_CLASSES": ["chatbot_api.authentication.JWTAuthentication"],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
