@@ -194,7 +194,7 @@ Usuarios demo (contraseña = `DEMO_PASSWORD`): `admin@`, `gerente@`, `operador@`
 
 - **Chatbot:** `LLM_PROVIDER=mock` (por defecto) responde con reglas locales sin red. Para Gemini define `LLM_PROVIDER=gemini` y `GEMINI_API_KEY` en `.env`.
 - **Pruebas unitarias** (por servicio): `cd services/<servicio> && pip install -r requirements-dev.txt && USE_SQLITE=true pytest`
-- **Pruebas de API:** importa `postman/paqueteria-ia.postman_collection.json` y `postman/local.postman_environment.json` en Postman, o ejecuta `npx newman run postman/paqueteria-ia.postman_collection.json -e postman/local.postman_environment.json --env-var "demo_password=<DEMO_PASSWORD>"`.
+- **Pruebas de API:** importa `postman/Entregable-2.postman_collection.json` y `postman/Entregable-2-local.postman_environment.json` en Postman, o ejecuta `npx newman run postman/Entregable-2.postman_collection.json -e postman/Entregable-2-local.postman_environment.json --env-var "demo_password=<DEMO_PASSWORD>"`.
 - **OpenAPI:** esquemas exportados en [`docs/api/`](docs/api); regenerar con `PYTHON=python scripts/export_openapi.sh`.
 - **Scrum:** backlog y plantillas en [`docs/scrum/`](docs/scrum).
 

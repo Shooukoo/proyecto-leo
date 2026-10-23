@@ -50,7 +50,7 @@ jobs:
       - name: Colección Postman (newman)
         run: |
           PW=$(grep '^DEMO_PASSWORD=' .env | cut -d= -f2-)
-          npx -y newman run postman/paqueteria-ia.postman_collection.json \
-            -e postman/local.postman_environment.json --env-var "demo_password=$PW"
+          npx -y newman run postman/Entregable-2.postman_collection.json \
+            -e postman/Entregable-2-local.postman_environment.json --env-var "demo_password=$PW"
       - if: failure()
         run: docker compose logs --tail=100
