@@ -1,20 +1,110 @@
+# Entorno local: `cp .env.example .env && docker compose up --build`
+x-servicio: &servicio
+  restart: unless-stopped
+  environment: &env-comun
+    DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?define DJANGO_SECRET_KEY en .env}
+    DJANGO_DEBUG: ${DJANGO_DEBUG:-false}
+    DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,auth,pedidos,tracking,chatbot
+    JWT_SIGNING_KEY: ${JWT_SIGNING_KEY:?define JWT_SIGNING_KEY en .env}
+
 services:
-  db:
+  db-auth:
     image: postgres:17
     environment:
-      POSTGRES_DB: packet_fast
+      POSTGRES_DB: auth
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-CHANGE_ME}
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?define POSTGRES_PASSWORD en .env}
+    volumes: [pgdata-auth:/var/lib/postgresql/data]
+    healthcheck: &pg-health
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
-  packet-fast:
-    build: ./packet-fast
-    env_file: ./packet-fast/.env
-    ports:
-      - "8000:8080"
+  db-pedidos:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: pedidos
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?define POSTGRES_PASSWORD en .env}
+    volumes: [pgdata-pedidos:/var/lib/postgresql/data]
+    healthcheck: *pg-health
+
+  mongo:
+    image: mongo:8
+    volumes: [mongodata:/data/db]
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ping:1}).ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  auth:
+    <<: *servicio
+    build: ./services/auth
+    ports: ["8001:8080"]
+    environment:
+      <<: *env-comun
+      POSTGRES_DB: auth
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST: db-auth
+      DEMO_PASSWORD: ${DEMO_PASSWORD:-}
     depends_on:
-      - db
+      db-auth: {condition: service_healthy}
+    healthcheck: &app-health
+      test: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://localhost:8080/health/')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+  pedidos:
+    <<: *servicio
+    build: ./services/pedidos
+    ports: ["8002:8080"]
+    environment:
+      <<: *env-comun
+      POSTGRES_DB: pedidos
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST: db-pedidos
+    depends_on:
+      db-pedidos: {condition: service_healthy}
+    healthcheck: *app-health
+
+  tracking:
+    <<: *servicio
+    build: ./services/tracking
+    ports: ["8003:8080"]
+    environment:
+      <<: *env-comun
+      MONGO_URI: mongodb://mongo:27017
+      MONGO_DB_NAME: tracking
+    depends_on:
+      mongo: {condition: service_healthy}
+    healthcheck: *app-health
+
+  chatbot:
+    <<: *servicio
+    build: ./services/chatbot
+    ports: ["8004:8080"]
+    environment:
+      <<: *env-comun
+      MONGO_URI: mongodb://mongo:27017
+      MONGO_DB_NAME: chatbot
+      LLM_PROVIDER: ${LLM_PROVIDER:-mock}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-2.5-flash}
+      PEDIDOS_URL: http://pedidos:8080
+      TRACKING_URL: http://tracking:8080
+    depends_on:
+      mongo: {condition: service_healthy}
+      pedidos: {condition: service_healthy}
+      tracking: {condition: service_healthy}
+    healthcheck: *app-health
 
 volumes:
-  pgdata:
+  pgdata-auth:
+  pgdata-pedidos:
+  mongodata:
