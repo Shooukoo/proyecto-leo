@@ -10,4 +10,4 @@ COPY . .
 RUN python manage.py collectstatic --noinput
 
 # Cloud Run inyecta $PORT
-CMD ["sh", "-c", "gunicorn chatbot.wsgi:application --bind 0.0.0.0:${PORT:-8080}"]
+CMD ["sh", "-c", "gunicorn chatbot.wsgi:application --timeout 90 --bind 0.0.0.0:${PORT:-8080}"]

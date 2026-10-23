@@ -93,8 +93,9 @@ SPECTACULAR_SETTINGS = {
 # IA: "mock" (reglas locales, sin red) o "gemini". La clave solo se lee del entorno.
 LLM_PROVIDER = os.environ.get("LLM_PROVIDER", "mock")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
-GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.5-flash")
 LLM_MAX_TOOL_ROUNDS = 4
+LLM_TIMEOUT_SECONDS = 20  # por llamada al proveedor; debe ser menor al timeout de gunicorn
 
 # Servicios de los que el chatbot obtiene los datos (el LLM nunca los inventa).
 PEDIDOS_URL = os.environ.get("PEDIDOS_URL", "http://localhost:8002")

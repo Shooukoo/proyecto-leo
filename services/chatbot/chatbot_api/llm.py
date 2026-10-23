@@ -80,10 +80,14 @@ class MockProvider:
 class GeminiProvider:
     def __init__(self):
         from google import genai
+        from google.genai import types
 
         if not settings.GEMINI_API_KEY:
             raise RuntimeError("Falta GEMINI_API_KEY para usar el proveedor gemini.")
-        self.client = genai.Client(api_key=settings.GEMINI_API_KEY)
+        self.client = genai.Client(
+            api_key=settings.GEMINI_API_KEY,
+            http_options=types.HttpOptions(timeout=settings.LLM_TIMEOUT_SECONDS * 1000),
+        )
 
     def responder(self, historial, mensaje, ejecutar):
         from google.genai import types

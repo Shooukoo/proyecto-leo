@@ -1,3 +1,4 @@
+import logging
 from functools import partial
 
 from drf_spectacular.utils import OpenApiParameter, extend_schema
@@ -13,6 +14,8 @@ from .serializers import (
     ChatSalidaSerializer,
     ConversacionSerializer,
 )
+
+logger = logging.getLogger(__name__)
 
 ROLES_STAFF = {"operador", "gerente", "admin_sistema"}
 RESPUESTA_ESCALADA = "Tu conversación ya fue transferida a un agente humano; te responderá pronto."
@@ -60,8 +63,10 @@ class ChatView(APIView):
         try:
             texto = llm.get_provider().responder(conv["mensajes"], mensaje, ejecutar)
         except Exception:
+            logger.exception("Fallo del proveedor de IA")
             # Fallo del proveedor de IA: se escala en vez de dejar al usuario sin respuesta.
-            ejecutar.usadas.append("escalar_a_humano")
+            if "escalar_a_humano" not in ejecutar.usadas:
+                ejecutar.usadas.append("escalar_a_humano")
             ejecutar.escalado = True
             texto = "No pude atender tu consulta en este momento; te paso con un agente humano."
 

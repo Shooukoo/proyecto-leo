@@ -95,7 +95,7 @@ services:
       MONGO_DB_NAME: chatbot
       LLM_PROVIDER: ${LLM_PROVIDER:-mock}
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}
-      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-2.5-flash}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3.5-flash}
       PEDIDOS_URL: http://pedidos:8080
       TRACKING_URL: http://tracking:8080
     depends_on:
