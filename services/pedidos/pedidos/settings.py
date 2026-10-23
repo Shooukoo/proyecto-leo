@@ -109,4 +109,5 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "API del microservicio Pedidos.",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
+    "ENUM_NAME_OVERRIDES": {"EstadoEnum": "pedidos_api.models.Pedido.Estado"},
 }

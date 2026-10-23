@@ -43,3 +43,19 @@ class JWTAuthentication(authentication.BaseAuthentication):
 
     def authenticate_header(self, request):
         return self.keyword
+
+
+try:
+    from drf_spectacular.extensions import OpenApiAuthenticationExtension
+
+    class JWTScheme(OpenApiAuthenticationExtension):
+        """Declara el esquema Bearer en OpenAPI para el botón Authorize de Swagger UI."""
+
+        target_class = "chatbot_api.authentication.JWTAuthentication"
+        name = "bearerAuth"
+
+        def get_security_definition(self, auto_schema):
+            return {"type": "http", "scheme": "bearer", "bearerFormat": "JWT"}
+
+except ImportError:  # drf-spectacular es opcional en tiempo de ejecución
+    pass

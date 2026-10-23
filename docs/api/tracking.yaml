@@ -1,0 +1,576 @@
+openapi: 3.0.3
+info:
+  title: paqueteria-ia — Tracking
+  version: 1.0.0
+  description: API del microservicio Tracking.
+paths:
+  /api/eventos/:
+    get:
+      operationId: eventos_list
+      description: CRUD sobre una colección Mongo con paginación, filtros y orden.
+      parameters:
+      - in: query
+        name: desde
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: hasta
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: ordering
+        schema:
+          type: string
+        description: Campo; prefijo '-' para descendente
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Número de página (1 por defecto)
+      - in: query
+        name: page_size
+        schema:
+          type: integer
+        description: Tamaño de página (máx. 100)
+      - in: query
+        name: pedido_id
+        schema:
+          type: integer
+      - in: query
+        name: repartidor_id
+        schema:
+          type: integer
+      - in: query
+        name: tipo
+        schema:
+          type: string
+      tags:
+      - eventos
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Evento'
+          description: ''
+    post:
+      operationId: eventos_create
+      description: CRUD sobre una colección Mongo con paginación, filtros y orden.
+      tags:
+      - eventos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Evento'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Evento'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Evento'
+        required: true
+      security:
+      - bearerAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evento'
+          description: ''
+  /api/eventos/{id}/:
+    get:
+      operationId: eventos_retrieve
+      description: CRUD sobre una colección Mongo con paginación, filtros y orden.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: ID del documento
+        required: true
+      tags:
+      - eventos
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evento'
+          description: ''
+    put:
+      operationId: eventos_update
+      description: CRUD sobre una colección Mongo con paginación, filtros y orden.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: ID del documento
+        required: true
+      tags:
+      - eventos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Evento'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Evento'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Evento'
+        required: true
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evento'
+          description: ''
+    patch:
+      operationId: eventos_partial_update
+      description: CRUD sobre una colección Mongo con paginación, filtros y orden.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: ID del documento
+        required: true
+      tags:
+      - eventos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEvento'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedEvento'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedEvento'
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evento'
+          description: ''
+    delete:
+      operationId: eventos_destroy
+      description: CRUD sobre una colección Mongo con paginación, filtros y orden.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: ID del documento
+        required: true
+      tags:
+      - eventos
+      security:
+      - bearerAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/ubicaciones/:
+    get:
+      operationId: ubicaciones_list
+      description: CRUD sobre una colección Mongo con paginación, filtros y orden.
+      parameters:
+      - in: query
+        name: desde
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: hasta
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: ordering
+        schema:
+          type: string
+        description: Campo; prefijo '-' para descendente
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Número de página (1 por defecto)
+      - in: query
+        name: page_size
+        schema:
+          type: integer
+        description: Tamaño de página (máx. 100)
+      - in: query
+        name: pedido_id
+        schema:
+          type: integer
+      - in: query
+        name: repartidor_id
+        schema:
+          type: integer
+      tags:
+      - ubicaciones
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Ubicacion'
+          description: ''
+    post:
+      operationId: ubicaciones_create
+      description: CRUD sobre una colección Mongo con paginación, filtros y orden.
+      tags:
+      - ubicaciones
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ubicacion'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Ubicacion'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Ubicacion'
+        required: true
+      security:
+      - bearerAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ubicacion'
+          description: ''
+  /api/ubicaciones/{id}/:
+    get:
+      operationId: ubicaciones_retrieve
+      description: CRUD sobre una colección Mongo con paginación, filtros y orden.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: ID del documento
+        required: true
+      tags:
+      - ubicaciones
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ubicacion'
+          description: ''
+    put:
+      operationId: ubicaciones_update
+      description: CRUD sobre una colección Mongo con paginación, filtros y orden.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: ID del documento
+        required: true
+      tags:
+      - ubicaciones
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ubicacion'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Ubicacion'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Ubicacion'
+        required: true
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ubicacion'
+          description: ''
+    patch:
+      operationId: ubicaciones_partial_update
+      description: CRUD sobre una colección Mongo con paginación, filtros y orden.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: ID del documento
+        required: true
+      tags:
+      - ubicaciones
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUbicacion'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUbicacion'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUbicacion'
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ubicacion'
+          description: ''
+    delete:
+      operationId: ubicaciones_destroy
+      description: CRUD sobre una colección Mongo con paginación, filtros y orden.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: ID del documento
+        required: true
+      tags:
+      - ubicaciones
+      security:
+      - bearerAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/ubicaciones/ultima/:
+    get:
+      operationId: ubicaciones_ultima_retrieve
+      description: Última ubicación conocida de un repartidor o de un pedido.
+      parameters:
+      - in: query
+        name: pedido_id
+        schema:
+          type: integer
+      - in: query
+        name: repartidor_id
+        schema:
+          type: integer
+      tags:
+      - ubicaciones
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ubicacion'
+          description: ''
+  /api/ubicaciones/ultimas/:
+    get:
+      operationId: ubicaciones_ultimas_list
+      description: Última ubicación de cada repartidor (vista de flota para el operador).
+      tags:
+      - ubicaciones
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Ubicacion'
+          description: ''
+components:
+  schemas:
+    Evento:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        tipo:
+          $ref: '#/components/schemas/TipoEnum'
+        pedido_id:
+          type: integer
+          minimum: 1
+        repartidor_id:
+          type: integer
+          minimum: 1
+        timestamp:
+          type: string
+          format: date-time
+        datos:
+          type: object
+          additionalProperties: {}
+          description: 'Esquema flexible según el tipo: URL de foto, firma, motivo
+            de incidencia, etc.'
+      required:
+      - id
+      - pedido_id
+      - tipo
+    PatchedEvento:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        tipo:
+          $ref: '#/components/schemas/TipoEnum'
+        pedido_id:
+          type: integer
+          minimum: 1
+        repartidor_id:
+          type: integer
+          minimum: 1
+        timestamp:
+          type: string
+          format: date-time
+        datos:
+          type: object
+          additionalProperties: {}
+          description: 'Esquema flexible según el tipo: URL de foto, firma, motivo
+            de incidencia, etc.'
+    PatchedUbicacion:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        repartidor_id:
+          type: integer
+          minimum: 1
+        pedido_id:
+          type: integer
+          minimum: 1
+          nullable: true
+        latitud:
+          type: number
+          format: double
+          maximum: 90
+          minimum: -90
+        longitud:
+          type: number
+          format: double
+          maximum: 180
+          minimum: -180
+        velocidad_kmh:
+          type: number
+          format: double
+          maximum: 300
+          minimum: 0
+        precision_m:
+          type: number
+          format: double
+          minimum: 0
+        bateria_pct:
+          type: integer
+          maximum: 100
+          minimum: 0
+        timestamp:
+          type: string
+          format: date-time
+        extra:
+          type: object
+          additionalProperties: {}
+          description: Campos libres del dispositivo
+    TipoEnum:
+      enum:
+      - inicio_ruta
+      - parada
+      - entrega
+      - incidencia
+      - foto
+      - firma
+      - nota
+      type: string
+      description: |-
+        * `inicio_ruta` - inicio_ruta
+        * `parada` - parada
+        * `entrega` - entrega
+        * `incidencia` - incidencia
+        * `foto` - foto
+        * `firma` - firma
+        * `nota` - nota
+    Ubicacion:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        repartidor_id:
+          type: integer
+          minimum: 1
+        pedido_id:
+          type: integer
+          minimum: 1
+          nullable: true
+        latitud:
+          type: number
+          format: double
+          maximum: 90
+          minimum: -90
+        longitud:
+          type: number
+          format: double
+          maximum: 180
+          minimum: -180
+        velocidad_kmh:
+          type: number
+          format: double
+          maximum: 300
+          minimum: 0
+        precision_m:
+          type: number
+          format: double
+          minimum: 0
+        bateria_pct:
+          type: integer
+          maximum: 100
+          minimum: 0
+        timestamp:
+          type: string
+          format: date-time
+        extra:
+          type: object
+          additionalProperties: {}
+          description: Campos libres del dispositivo
+      required:
+      - id
+      - latitud
+      - longitud
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

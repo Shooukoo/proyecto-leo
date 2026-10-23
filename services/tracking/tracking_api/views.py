@@ -11,6 +11,8 @@ from . import mongo
 from .permissions import ROLES_STAFF, TrackingPermission
 from .serializers import EventoSerializer, UbicacionSerializer
 
+ID_PARAM = OpenApiParameter("id", str, OpenApiParameter.PATH, description="ID del documento")
+
 PAGE_PARAMS = [
     OpenApiParameter("page", int, description="Número de página (1 por defecto)"),
     OpenApiParameter("page_size", int, description="Tamaño de página (máx. 100)"),
@@ -147,9 +149,14 @@ class MongoViewSet(viewsets.ViewSet):
         responses=UbicacionSerializer(many=True),
     ),
     create=extend_schema(request=UbicacionSerializer, responses=UbicacionSerializer),
-    retrieve=extend_schema(responses=UbicacionSerializer),
-    update=extend_schema(request=UbicacionSerializer, responses=UbicacionSerializer),
-    partial_update=extend_schema(request=UbicacionSerializer, responses=UbicacionSerializer),
+    retrieve=extend_schema(parameters=[ID_PARAM], responses=UbicacionSerializer),
+    update=extend_schema(
+        parameters=[ID_PARAM], request=UbicacionSerializer, responses=UbicacionSerializer
+    ),
+    partial_update=extend_schema(
+        parameters=[ID_PARAM], request=UbicacionSerializer, responses=UbicacionSerializer
+    ),
+    destroy=extend_schema(parameters=[ID_PARAM]),
 )
 class UbicacionViewSet(MongoViewSet):
     repo = mongo.ubicaciones
@@ -204,9 +211,14 @@ class UbicacionViewSet(MongoViewSet):
         responses=EventoSerializer(many=True),
     ),
     create=extend_schema(request=EventoSerializer, responses=EventoSerializer),
-    retrieve=extend_schema(responses=EventoSerializer),
-    update=extend_schema(request=EventoSerializer, responses=EventoSerializer),
-    partial_update=extend_schema(request=EventoSerializer, responses=EventoSerializer),
+    retrieve=extend_schema(parameters=[ID_PARAM], responses=EventoSerializer),
+    update=extend_schema(
+        parameters=[ID_PARAM], request=EventoSerializer, responses=EventoSerializer
+    ),
+    partial_update=extend_schema(
+        parameters=[ID_PARAM], request=EventoSerializer, responses=EventoSerializer
+    ),
+    destroy=extend_schema(parameters=[ID_PARAM]),
 )
 class EventoViewSet(MongoViewSet):
     repo = mongo.eventos

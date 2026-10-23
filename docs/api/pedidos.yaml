@@ -1,0 +1,1171 @@
+openapi: 3.0.3
+info:
+  title: paqueteria-ia — Pedidos
+  version: 1.0.0
+  description: API del microservicio Pedidos.
+paths:
+  /api/clientes/:
+    get:
+      operationId: clientes_list
+      description: El rol `cliente` solo ve lo que pertenece a su usuario; el resto
+        ve todo.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Qué campo usar para ordenar los resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Un número de página dentro del conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a devolver por página.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Un término de búsqueda.
+        schema:
+          type: string
+      tags:
+      - clientes
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedClienteList'
+          description: ''
+    post:
+      operationId: clientes_create
+      description: El rol `cliente` solo ve lo que pertenece a su usuario; el resto
+        ve todo.
+      tags:
+      - clientes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cliente'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Cliente'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Cliente'
+        required: true
+      security:
+      - bearerAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cliente'
+          description: ''
+  /api/clientes/{id}/:
+    get:
+      operationId: clientes_retrieve
+      description: El rol `cliente` solo ve lo que pertenece a su usuario; el resto
+        ve todo.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este cliente.
+        required: true
+      tags:
+      - clientes
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cliente'
+          description: ''
+    put:
+      operationId: clientes_update
+      description: El rol `cliente` solo ve lo que pertenece a su usuario; el resto
+        ve todo.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este cliente.
+        required: true
+      tags:
+      - clientes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cliente'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Cliente'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Cliente'
+        required: true
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cliente'
+          description: ''
+    patch:
+      operationId: clientes_partial_update
+      description: El rol `cliente` solo ve lo que pertenece a su usuario; el resto
+        ve todo.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este cliente.
+        required: true
+      tags:
+      - clientes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCliente'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCliente'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCliente'
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cliente'
+          description: ''
+    delete:
+      operationId: clientes_destroy
+      description: El rol `cliente` solo ve lo que pertenece a su usuario; el resto
+        ve todo.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este cliente.
+        required: true
+      tags:
+      - clientes
+      security:
+      - bearerAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/direcciones/:
+    get:
+      operationId: direcciones_list
+      description: El rol `cliente` solo ve lo que pertenece a su usuario; el resto
+        ve todo.
+      parameters:
+      - in: query
+        name: ciudad
+        schema:
+          type: string
+      - in: query
+        name: cliente
+        schema:
+          type: integer
+      - in: query
+        name: codigo_postal
+        schema:
+          type: string
+      - in: query
+        name: estado
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Qué campo usar para ordenar los resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Un número de página dentro del conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a devolver por página.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Un término de búsqueda.
+        schema:
+          type: string
+      tags:
+      - direcciones
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDireccionList'
+          description: ''
+    post:
+      operationId: direcciones_create
+      description: El rol `cliente` solo ve lo que pertenece a su usuario; el resto
+        ve todo.
+      tags:
+      - direcciones
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Direccion'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Direccion'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Direccion'
+        required: true
+      security:
+      - bearerAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Direccion'
+          description: ''
+  /api/direcciones/{id}/:
+    get:
+      operationId: direcciones_retrieve
+      description: El rol `cliente` solo ve lo que pertenece a su usuario; el resto
+        ve todo.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este direccion.
+        required: true
+      tags:
+      - direcciones
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Direccion'
+          description: ''
+    put:
+      operationId: direcciones_update
+      description: El rol `cliente` solo ve lo que pertenece a su usuario; el resto
+        ve todo.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este direccion.
+        required: true
+      tags:
+      - direcciones
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Direccion'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Direccion'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Direccion'
+        required: true
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Direccion'
+          description: ''
+    patch:
+      operationId: direcciones_partial_update
+      description: El rol `cliente` solo ve lo que pertenece a su usuario; el resto
+        ve todo.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este direccion.
+        required: true
+      tags:
+      - direcciones
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDireccion'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDireccion'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDireccion'
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Direccion'
+          description: ''
+    delete:
+      operationId: direcciones_destroy
+      description: El rol `cliente` solo ve lo que pertenece a su usuario; el resto
+        ve todo.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este direccion.
+        required: true
+      tags:
+      - direcciones
+      security:
+      - bearerAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/pedidos/:
+    get:
+      operationId: pedidos_list
+      description: El rol `cliente` solo ve lo que pertenece a su usuario; el resto
+        ve todo.
+      parameters:
+      - in: query
+        name: cliente
+        schema:
+          type: integer
+      - in: query
+        name: creado_desde
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: creado_hasta
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: es_cod
+        schema:
+          type: boolean
+      - in: query
+        name: estado
+        schema:
+          type: string
+          enum:
+          - creado
+          - devuelto
+          - en_ruta
+          - entregado
+          - incidencia
+        description: |-
+          * `creado` - Creado
+          * `en_ruta` - En ruta
+          * `entregado` - Entregado
+          * `incidencia` - Incidencia
+          * `devuelto` - Devuelto
+      - in: query
+        name: folio
+        schema:
+          type: string
+          format: uuid
+      - name: ordering
+        required: false
+        in: query
+        description: Qué campo usar para ordenar los resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Un número de página dentro del conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a devolver por página.
+        schema:
+          type: integer
+      - in: query
+        name: peso_max
+        schema:
+          type: number
+      - in: query
+        name: peso_min
+        schema:
+          type: number
+      - in: query
+        name: prioridad
+        schema:
+          type: string
+          enum:
+          - alta
+          - baja
+          - normal
+          - urgente
+        description: |-
+          * `baja` - Baja
+          * `normal` - Normal
+          * `alta` - Alta
+          * `urgente` - Urgente
+      - in: query
+        name: repartidor_id
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Un término de búsqueda.
+        schema:
+          type: string
+      tags:
+      - pedidos
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPedidoList'
+          description: ''
+    post:
+      operationId: pedidos_create
+      description: El rol `cliente` solo ve lo que pertenece a su usuario; el resto
+        ve todo.
+      tags:
+      - pedidos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pedido'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Pedido'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Pedido'
+        required: true
+      security:
+      - bearerAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pedido'
+          description: ''
+  /api/pedidos/{id}/:
+    get:
+      operationId: pedidos_retrieve
+      description: El rol `cliente` solo ve lo que pertenece a su usuario; el resto
+        ve todo.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este pedido.
+        required: true
+      tags:
+      - pedidos
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pedido'
+          description: ''
+    put:
+      operationId: pedidos_update
+      description: El rol `cliente` solo ve lo que pertenece a su usuario; el resto
+        ve todo.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este pedido.
+        required: true
+      tags:
+      - pedidos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pedido'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Pedido'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Pedido'
+        required: true
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pedido'
+          description: ''
+    patch:
+      operationId: pedidos_partial_update
+      description: El rol `cliente` solo ve lo que pertenece a su usuario; el resto
+        ve todo.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este pedido.
+        required: true
+      tags:
+      - pedidos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPedido'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPedido'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPedido'
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pedido'
+          description: ''
+    delete:
+      operationId: pedidos_destroy
+      description: El rol `cliente` solo ve lo que pertenece a su usuario; el resto
+        ve todo.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este pedido.
+        required: true
+      tags:
+      - pedidos
+      security:
+      - bearerAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/pedidos/{id}/cambiar-estado/:
+    post:
+      operationId: pedidos_cambiar_estado_create
+      description: El rol `cliente` solo ve lo que pertenece a su usuario; el resto
+        ve todo.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este pedido.
+        required: true
+      tags:
+      - pedidos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CambioEstado'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CambioEstado'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CambioEstado'
+        required: true
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pedido'
+          description: ''
+  /api/pedidos/{id}/historial/:
+    get:
+      operationId: pedidos_historial_list
+      description: El rol `cliente` solo ve lo que pertenece a su usuario; el resto
+        ve todo.
+      parameters:
+      - in: query
+        name: cliente
+        schema:
+          type: integer
+      - in: query
+        name: creado_desde
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: creado_hasta
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: es_cod
+        schema:
+          type: boolean
+      - in: query
+        name: estado
+        schema:
+          type: string
+          enum:
+          - creado
+          - devuelto
+          - en_ruta
+          - entregado
+          - incidencia
+        description: |-
+          * `creado` - Creado
+          * `en_ruta` - En ruta
+          * `entregado` - Entregado
+          * `incidencia` - Incidencia
+          * `devuelto` - Devuelto
+      - in: query
+        name: folio
+        schema:
+          type: string
+          format: uuid
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este pedido.
+        required: true
+      - name: ordering
+        required: false
+        in: query
+        description: Qué campo usar para ordenar los resultados.
+        schema:
+          type: string
+      - in: query
+        name: peso_max
+        schema:
+          type: number
+      - in: query
+        name: peso_min
+        schema:
+          type: number
+      - in: query
+        name: prioridad
+        schema:
+          type: string
+          enum:
+          - alta
+          - baja
+          - normal
+          - urgente
+        description: |-
+          * `baja` - Baja
+          * `normal` - Normal
+          * `alta` - Alta
+          * `urgente` - Urgente
+      - in: query
+        name: repartidor_id
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Un término de búsqueda.
+        schema:
+          type: string
+      tags:
+      - pedidos
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HistorialEstado'
+          description: ''
+components:
+  schemas:
+    CambioEstado:
+      type: object
+      properties:
+        estado:
+          $ref: '#/components/schemas/EstadoEnum'
+        comentario:
+          type: string
+          maxLength: 255
+      required:
+      - estado
+    Cliente:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        nombre:
+          type: string
+          maxLength: 120
+        telefono:
+          type: string
+          maxLength: 20
+        email:
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
+        usuario_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+          description: ID de usuario (auth) dueño del cliente; acota lo que ve el
+            rol cliente
+        creado:
+          type: string
+          format: date-time
+          readOnly: true
+        direcciones:
+          type: array
+          items:
+            $ref: '#/components/schemas/Direccion'
+          readOnly: true
+      required:
+      - creado
+      - direcciones
+      - id
+      - nombre
+      - telefono
+    Direccion:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        calle:
+          type: string
+          maxLength: 150
+        numero:
+          type: string
+          maxLength: 20
+        colonia:
+          type: string
+          maxLength: 100
+        ciudad:
+          type: string
+          maxLength: 100
+        estado:
+          type: string
+          maxLength: 100
+        codigo_postal:
+          type: string
+          maxLength: 5
+        referencias:
+          type: string
+        latitud:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+        longitud:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+        cliente:
+          type: integer
+      required:
+      - calle
+      - ciudad
+      - cliente
+      - codigo_postal
+      - colonia
+      - id
+      - numero
+    EstadoEnum:
+      enum:
+      - creado
+      - en_ruta
+      - entregado
+      - incidencia
+      - devuelto
+      type: string
+      description: |-
+        * `creado` - Creado
+        * `en_ruta` - En ruta
+        * `entregado` - Entregado
+        * `incidencia` - Incidencia
+        * `devuelto` - Devuelto
+    HistorialEstado:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        estado_anterior:
+          $ref: '#/components/schemas/EstadoEnum'
+        estado_nuevo:
+          $ref: '#/components/schemas/EstadoEnum'
+        usuario_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+        comentario:
+          type: string
+          maxLength: 255
+        fecha:
+          type: string
+          format: date-time
+          readOnly: true
+        pedido:
+          type: integer
+      required:
+      - estado_anterior
+      - estado_nuevo
+      - fecha
+      - id
+      - pedido
+    PaginatedClienteList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Cliente'
+    PaginatedDireccionList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Direccion'
+    PaginatedPedidoList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Pedido'
+    PatchedCliente:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        nombre:
+          type: string
+          maxLength: 120
+        telefono:
+          type: string
+          maxLength: 20
+        email:
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
+        usuario_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+          description: ID de usuario (auth) dueño del cliente; acota lo que ve el
+            rol cliente
+        creado:
+          type: string
+          format: date-time
+          readOnly: true
+        direcciones:
+          type: array
+          items:
+            $ref: '#/components/schemas/Direccion'
+          readOnly: true
+    PatchedDireccion:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        calle:
+          type: string
+          maxLength: 150
+        numero:
+          type: string
+          maxLength: 20
+        colonia:
+          type: string
+          maxLength: 100
+        ciudad:
+          type: string
+          maxLength: 100
+        estado:
+          type: string
+          maxLength: 100
+        codigo_postal:
+          type: string
+          maxLength: 5
+        referencias:
+          type: string
+        latitud:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+        longitud:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+        cliente:
+          type: integer
+    PatchedPedido:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        folio:
+          type: string
+          format: uuid
+          readOnly: true
+        descripcion:
+          type: string
+          maxLength: 255
+        peso_kg:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,5}(?:\.\d{0,2})?$
+        prioridad:
+          $ref: '#/components/schemas/PrioridadEnum'
+        estado:
+          allOf:
+          - $ref: '#/components/schemas/EstadoEnum'
+          readOnly: true
+        es_cod:
+          type: boolean
+          description: Pago contra entrega
+        monto_cod:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        repartidor_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+          description: ID de usuario (servicio auth) con rol repartidor
+        creado:
+          type: string
+          format: date-time
+          readOnly: true
+        actualizado:
+          type: string
+          format: date-time
+          readOnly: true
+        cliente:
+          type: integer
+        direccion_origen:
+          type: integer
+        direccion_destino:
+          type: integer
+    Pedido:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        folio:
+          type: string
+          format: uuid
+          readOnly: true
+        descripcion:
+          type: string
+          maxLength: 255
+        peso_kg:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,5}(?:\.\d{0,2})?$
+        prioridad:
+          $ref: '#/components/schemas/PrioridadEnum'
+        estado:
+          allOf:
+          - $ref: '#/components/schemas/EstadoEnum'
+          readOnly: true
+        es_cod:
+          type: boolean
+          description: Pago contra entrega
+        monto_cod:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        repartidor_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+          description: ID de usuario (servicio auth) con rol repartidor
+        creado:
+          type: string
+          format: date-time
+          readOnly: true
+        actualizado:
+          type: string
+          format: date-time
+          readOnly: true
+        cliente:
+          type: integer
+        direccion_origen:
+          type: integer
+        direccion_destino:
+          type: integer
+      required:
+      - actualizado
+      - cliente
+      - creado
+      - direccion_destino
+      - direccion_origen
+      - estado
+      - folio
+      - id
+      - peso_kg
+    PrioridadEnum:
+      enum:
+      - baja
+      - normal
+      - alta
+      - urgente
+      type: string
+      description: |-
+        * `baja` - Baja
+        * `normal` - Normal
+        * `alta` - Alta
+        * `urgente` - Urgente
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

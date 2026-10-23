@@ -1,0 +1,180 @@
+openapi: 3.0.3
+info:
+  title: paqueteria-ia — Chatbot IA
+  version: 1.0.0
+  description: API del microservicio Chatbot IA.
+paths:
+  /api/chat/:
+    post:
+      operationId: chat_create
+      tags:
+      - chat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatEntrada'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ChatEntrada'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ChatEntrada'
+        required: true
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatSalida'
+          description: ''
+  /api/conversaciones/:
+    get:
+      operationId: conversaciones_list
+      parameters:
+      - in: query
+        name: estado
+        schema:
+          type: string
+          enum:
+          - abierta
+          - escalada
+      - in: query
+        name: page
+        schema:
+          type: integer
+      - in: query
+        name: page_size
+        schema:
+          type: integer
+      tags:
+      - conversaciones
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Conversacion'
+          description: ''
+  /api/conversaciones/{conversation_id}/:
+    get:
+      operationId: conversaciones_retrieve
+      parameters:
+      - in: path
+        name: conversation_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - conversaciones
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conversacion'
+          description: ''
+components:
+  schemas:
+    ChatEntrada:
+      type: object
+      properties:
+        conversation_id:
+          type: string
+          nullable: true
+        mensaje:
+          type: string
+          maxLength: 1000
+      required:
+      - mensaje
+    ChatSalida:
+      type: object
+      properties:
+        conversation_id:
+          type: string
+        respuesta:
+          type: string
+        herramientas_usadas:
+          type: array
+          items:
+            type: string
+        escalado:
+          type: boolean
+      required:
+      - conversation_id
+      - escalado
+      - herramientas_usadas
+      - respuesta
+    Conversacion:
+      type: object
+      properties:
+        id:
+          type: string
+        usuario_id:
+          type: integer
+        estado:
+          $ref: '#/components/schemas/EstadoEnum'
+        mensajes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Mensaje'
+        creado:
+          type: string
+          format: date-time
+        actualizado:
+          type: string
+          format: date-time
+      required:
+      - actualizado
+      - creado
+      - estado
+      - id
+      - mensajes
+      - usuario_id
+    EstadoEnum:
+      enum:
+      - abierta
+      - escalada
+      type: string
+      description: |-
+        * `abierta` - abierta
+        * `escalada` - escalada
+    Mensaje:
+      type: object
+      properties:
+        rol:
+          $ref: '#/components/schemas/RolEnum'
+        texto:
+          type: string
+        herramientas:
+          type: array
+          items:
+            type: string
+        timestamp:
+          type: string
+          format: date-time
+      required:
+      - rol
+      - texto
+      - timestamp
+    RolEnum:
+      enum:
+      - usuario
+      - asistente
+      type: string
+      description: |-
+        * `usuario` - usuario
+        * `asistente` - asistente
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
