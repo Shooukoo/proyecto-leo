@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: packet_fast
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-CHANGE_ME}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  packet-fast:
+    build: ./packet-fast
+    env_file: ./packet-fast/.env
+    ports:
+      - "8000:8080"
+    depends_on:
+      - db
+
+volumes:
+  pgdata:
